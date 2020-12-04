@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View,Text,StyleSheet,TouchableOpacity} from 'react-native';
+import {View,Text,StyleSheet,TouchableOpacity, Alert} from 'react-native';
 import {Card,Header,Icon} from 'react-native-elements';
 import firebase from 'firebase';
 import db from '../config.js';
@@ -16,7 +16,8 @@ export default class ReceiverDetailsScreen extends React.Component {
           receiverName : '',
           receiverContact : '',
           receiverAddress : '',
-          receiverRequestDocId : ''
+          receiverRequestDocId : '',
+          userName: "",
         }
     }
 
@@ -49,8 +50,33 @@ export default class ReceiverDetailsScreen extends React.Component {
       })
     }
 
+    getUserName=(userId)=>{
+      db.collection("users").where("email_Id","==", userId).get()
+      .then((snapshot)=>{
+        snapshot.forEach((doc) => {
+          this.setState({
+            userName : doc.data().first_name + " " + doc.data().last_name
+          })
+        });
+      })      
+    }
+
+    addNotification=()=>{
+      var message = this.state.userName + " has shown interest in donating the book"
+      db.collection("all_notifications").add({
+        "targeted_user_id"    : this.state.receiverId,
+        "donor_id"            : this.state.userId,
+        "request_id"          : this.state.requestId,
+        "book_name"           : this.state.objectName,
+        "date"                : firebase.firestore.FieldValue.serverTimestamp(),
+        "notification_status" : "unread",
+        "message"             : message
+      })
+    }
+
     componentDidMount(){
       this.getReceiverDetails();
+      this.getUserName(this.state.userId)
     }
 
     render(){
@@ -109,6 +135,7 @@ export default class ReceiverDetailsScreen extends React.Component {
                     style={styles.button}
                     onPress={()=>{
                       this.updateObjectStatus();
+                      this.addNotification()
                       this.props.navigation.navigate('MyBarters')
                     }}>
                   <Text>I want to Donate</Text>
