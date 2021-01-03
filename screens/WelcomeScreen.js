@@ -24,6 +24,7 @@ export default class WelcomeScreen extends React.Component {
             lastName: '',
             contact: '',
             address: '',
+            IsRequestActive: false
         }
     }
 
@@ -41,7 +42,8 @@ export default class WelcomeScreen extends React.Component {
                     "first_name": this.state.firstName,
                     "last_name": this.state.lastName,
                     "contact": this.state.contact,
-                    "address": this.state.address
+                    "address": this.state.address,
+                    "IsRequestActive": false
                 })
                 this.setState({ isModalVisible: 'false' })
                 return (
