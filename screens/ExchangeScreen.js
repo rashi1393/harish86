@@ -42,8 +42,12 @@ export default class ExchangeScreen extends Component {
             "date"       : firebase.firestore.FieldValue.serverTimestamp()
         })
 
+
         await this.getRequest()
-          db.collection('users').where("email_id","==",userId).get()
+
+        // on the line no 51 changed userId to this.state.userID.
+        // changed email_id to email_Id. as I in database is capital.
+          db.collection('users').where("email_Id","==",this.state.userId).get()
           .then()
           .then((snapshot)=>{
             snapshot.forEach((doc)=>{
@@ -59,6 +63,16 @@ export default class ExchangeScreen extends Component {
         })
     
         return Alert.alert(" Requested Successfully")
+      //   return Alert.alert(
+      //     'Item ready to exchange',
+      //     '',
+      //     [
+      //       {text: 'OK', onPress: () => {
+
+      //         this.props.navigation.navigate('DonateScreen')
+      //       }}
+      //     ]
+      // );
       }
 
       getRequest =()=>{
@@ -81,7 +95,8 @@ export default class ExchangeScreen extends Component {
 
       getIsObjectRequestActive(){
         db.collection('users')
-        .where('email_id','==',this.state.userId)
+        // on line no 99, email_id to email_Id.
+        .where('email_Id','==',this.state.userId)
         .onSnapshot(querySnapshot => {
           querySnapshot.forEach(doc => {
             this.setState({
@@ -100,7 +115,8 @@ export default class ExchangeScreen extends Component {
         })
       
         //getting the  doc id to update the users doc
-        db.collection('users').where('email_id','==',this.state.userId).get()
+        //on line no 119 changed email_id to email_Id.
+        db.collection('users').where('email_Id','==',this.state.userId).get()
         .then((snapshot)=>{
           snapshot.forEach((doc) => {
             //updating the doc
@@ -113,7 +129,8 @@ export default class ExchangeScreen extends Component {
 
       sendNotification=()=>{
         //to get the first name and last name
-        db.collection('users').where('email_id','==',this.state.userId).get()
+        //on line no 133 changed email_id to email_Id.
+        db.collection('users').where('email_Id','==',this.state.userId).get()
         .then((snapshot)=>{
           snapshot.forEach((doc)=>{
             var name = doc.data().first_name
@@ -140,7 +157,7 @@ export default class ExchangeScreen extends Component {
         })
       }
 
-      omponentDidMount(){
+      componentDidMount(){
         this.getRequest()
         this.getIsObjectRequestActive()      
       }
@@ -250,23 +267,3 @@ const styles = StyleSheet.create({
         marginTop:20
       },
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
